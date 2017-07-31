@@ -1,0 +1,107 @@
+*****************************************
+CGMF, Version 1.0.7, LA-CC-13-063
+*****************************************
+CGMF User Manual, v.1.0.6 [TO UPDATE], LA-UR-14-24031
+*****************************************
+
+P.Talou, talou@lanl.gov
+T.Kawano, kawano@lanl.gov
+I.Stetcu, stetcu@lanl.gov
+
+*********************************
+
+Dec. 8, 2015
+
+*********************************
+
+>> Version 1.0.7
+
+- Modified the procedure for calculating neutron energies. Now first calculate the neutron velocity vectors in the center of mass of the fragments, and transform them into the laboratory (classically). Energies can be inferred from those. A new output file 'histories-vectors.CGMF' is produced to generate neutron and photon vectors in the laboratory. Important to compute n-n angular correlations for instance.
+
+- Modified input parameters for the energy dependent calculations of Pu-239 (n,f), per Stetcu's work.
+
+// possibly in 1.0.8 //
+
+- [TO COMPLETE] Added interface with MCNP6
+- [TO COMPLETE] Extended yield calculations to 20 MeV for U-235
+
+
+>> Version 1.0.6
+
+- Added <KE>(A) in output file ('yields.out'), written in checkDistributions() routine
+- Cleaned up main driver (cgmf.cpp) by adding new routines readHistoryFile() and generateYields()
+- Added incident energy-dependent fission fragment yields for Pu-239 from thermal up to 20 MeV
+- Added five (5) test cases
+
+  -- Test1: incident energy dependence of the fission fragment yields for Pu239
+  -- Test2: reading of a Monte Carlo history file produced earlier by CGMF
+  -- Test3: default calculation for Cf-252 spontaneous fission
+  -- Test4: Pu-239 (n,f) calculations at En=10.0 MeV
+  -- Test5: time coincidence window on Cf-252 (sf) gamma-ray spectrum
+
+- Major revision of the user manual to reflect changes in this new version.
+
+*********************************
+
+>> Version 1.0.5
+
+- Added experimental time coincidence window option. Set time in config.h as EXPERIMENTAL_TIME_WINDOW.
+
+*********************************
+
+>> Version 1.0.4
+
+- Changed data paths in configuration files (config.h and config-ff.h); removed the CGMFDATADIR directive in config-ff.h, and modified data directory path (DATADIR) in config.h.
+- Added user manual in both PDF and HTML formats under doc/
+- Added option to read Y(A,Z,TKE) file
+- Fixed problem setting the value of the alphaI parameter. Needed pointers instead. 
+
+*********************************
+
+>> Version 1.0.3
+
+- FissionFragments.cpp: add error messages for incident energies not acceptable yet
+- FissionEvents.cpp: fixed bug for lfCounter and hfCounter variables (pb for sym. fission)
+
+*********************************
+
+// INSTALL // ----------------------------------------------------------------------
+
+1- Move to src/ directory
+
+2- Edit configuration files:
+
+   -- config.h: modify DATADIR to specify CoH data directory
+   -- config-ff.h: modify CGMFDATADIR to specify CGMF data directory
+
+3- Edit Makefile to specify C/C++ compilers (gcc/g++ by default)
+
+4- Type: make
+
+It creates the executable ./CGMF
+
+
+// USAGE // -------------------------------------------------------------------------
+ 
+./CGMF [options]
+
+Options:
+
+	-i $ZAIDt   	[required]	1000*Z+A of target nucleus, or fissioning nucleus if spontaneous fission
+	-e $Einc    	[required]	incident neutron energy in MeV (0.0 for spontaneous fission)
+	-n $nevents 	[optional]	number of Monte Carlo fission events to run or to be read
+					if $nevents is negative, produces initial fission fragments yields Y(A,Z,KE,U,J,p)
+	-r $historyFile	[optional]	name of file (absolute path) containing Monte Carlo histories
+
+[Instructions for MPI usage to be added later]
+
+// OUTPUT // -------------------------------------------------------------------------
+
+Results are saved in several output files:
+
+- summary.CGMF: 	Summary of results for both prompt neutrons and photons
+- results.CGMF:		Results related to fission fragment data
+- neutrons.CGMF:	Results on prompt fission neutrons
+- gammas.CGMF:		Results on prompt fission gamma rays
+- histories.CGMF:	List mode of Monte Carlo fission events
+
